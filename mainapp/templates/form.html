@@ -1,0 +1,31 @@
+<form method="post">
+  {% csrf_token %} {{ form.brand }} {{ form.vehicle }}
+  <input type="submit" value="Submit" />
+</form>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const brandSelect = document.querySelector("#id_brand");
+    console.log(brandSelect);
+    const vehicleSelect = document.querySelector("#id_vehicle");
+
+    brandSelect.addEventListener("change", function () {
+      const selectedBrandId = this.value;
+      vehicleSelect.innerHTML = ""; // Clear the existing options
+
+      if (selectedBrandId) {
+        // Fetch vehicles for the selected brand from the server using AJAX
+        fetch(`/get_vehicles/${selectedBrandId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            data.forEach((vehicle) => {
+              const option = document.createElement("option");
+              option.value = vehicle.id;
+              option.text = vehicle.vehicle_name;
+              vehicleSelect.appendChild(option);
+            });
+          });
+      }
+    });
+  });
+</script>
